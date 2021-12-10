@@ -25,6 +25,11 @@ func main() {
 	list := []int{1, 2, 3}
 	l := list[1:2:2]
 	fmt.Println(l)
-	fmt.Printf("capacity : %d", cap(l))
+	fmt.Printf("capacity : %d\n", cap(l))
+
+	fmt.Printf("string first item : %s last item %s\n", string(s[0]), string(s[len(s)-1]))
+	fmt.Printf("rune first item : %d last item %d\n", s[0], s[len(s)-1])
+	s = s[:len(s)-1]
+	fmt.Println(s)
 
 }
