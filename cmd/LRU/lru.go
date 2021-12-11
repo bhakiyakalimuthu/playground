@@ -19,11 +19,40 @@ func main() {
 // If the list is full, remove the item from the tail of the list as well as from map
 // then add the item to map & add item to head of the list
 
+type Action interface {
+	Add(key, value string)
+	Get(key string) string
+}
 type LRU struct {
-	cache map[string]int
+	cache map[string]list.Element
 	list  *list.List
+	cap   int
 	data  int
 }
 
-func New(cap int) {
+func New(cap int) Action {
+	return &LRU{
+		cache: make(map[string]list.Element, cap),
+		list:  list.New(),
+		cap:   cap,
+		data:  0,
+	}
+}
+
+func (l *LRU) Add(key, value string) {
+	// If key already exist
+	// If map is full
+
+	if len(l.cache) == l.cap {
+		last := l.list.Back()
+		l.list.Remove(last)
+		delete(l.cache, last.Value)
+		front := l.list.Front()
+		l.list.InsertBefore(key, front)
+
+	}
+}
+
+func (l *LRU) Get(key string) string {
+
 }
