@@ -127,4 +127,9 @@ func main() {
 	}
 	fmt.Printf("data1 unmarshal %+v\n", l)
 
+	b, _ := json.Marshal(&d)
+	fmt.Printf("data %+v", string(b))
+
+	//json.NewEncoder().Encode()
+	//json.NewDecoder().Decode()
 }
