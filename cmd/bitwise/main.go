@@ -43,4 +43,6 @@ func main() {
 
 	fmt.Printf("lef shift %d\n", 4<<10)
 	fmt.Printf("lef shift %d\n", 1<<12)
+	fmt.Printf("lef shift %d\n", 1<<30-1)
+
 }

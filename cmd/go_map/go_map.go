@@ -32,9 +32,12 @@ func main() {
 		"374": "Armenia",
 		"61":  "Australia",
 	}
-	if country, ok := countryCodes["93"]; ok {
+
+	countryCodes["6"] = "sweden"
+	if country, ok := countryCodes["6"]; ok {
 		fmt.Println(country, "is a beautiful place")
 	} else {
 		fmt.Println("I don't know that country")
 	}
+	fmt.Println(countryCodes["6"])
 }

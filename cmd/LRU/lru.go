@@ -30,6 +30,10 @@ type LRU struct {
 	data  int
 }
 
+type pair struct {
+	key, value string
+}
+
 func New(cap int) Action {
 	return &LRU{
 		cache: make(map[string]list.Element, cap),
@@ -40,19 +44,37 @@ func New(cap int) Action {
 }
 
 func (l *LRU) Add(key, value string) {
-	// If key already exist
-	// If map is full
-
+	p := pair{key: key, value: value}
 	if len(l.cache) == l.cap {
+		// fetch last element
 		last := l.list.Back()
+		// remove from the list
 		l.list.Remove(last)
-		delete(l.cache, last.Value)
-		front := l.list.Front()
-		l.list.InsertBefore(key, front)
-
+		// delete the same element from cache
+		delete(l.cache, last.Value.(pair).key)
 	}
+	l.cache[key] = list.Element{Value: p}
+	// fetch the first element
+	front := l.list.Front()
+	if front == nil {
+		l.list.PushFront(p)
+		return
+	}
+	// insert new key before front element
+	l.list.InsertBefore(p, front)
 }
 
 func (l *LRU) Get(key string) string {
+	// fetch front element from the list
+	front := l.list.Front()
+
+	if v, ok := l.cache[key]; ok {
+		if front.Value.(pair).key != key {
+			// insert the latest key before front
+			l.list.InsertBefore(v, front)
+		}
+		return v.Value.(pair).value
+	}
+	return ""
 
 }

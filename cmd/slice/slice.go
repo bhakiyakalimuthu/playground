@@ -29,7 +29,12 @@ func main() {
 
 	fmt.Printf("string first item : %s last item %s\n", string(s[0]), string(s[len(s)-1]))
 	fmt.Printf("rune first item : %d last item %d\n", s[0], s[len(s)-1])
-	s = s[:len(s)-1]
+	s = s[:]
 	fmt.Println(s)
 
+	list1 := []int{1, 2, 3}
+	list1 = append(list1, 0)
+	fmt.Println(list1)
+	fmt.Println(list1[len(list1)-1])
+	fmt.Println(int(^uint(0) >> 1))
 }
