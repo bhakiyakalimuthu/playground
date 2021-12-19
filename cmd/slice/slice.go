@@ -37,4 +37,10 @@ func main() {
 	fmt.Println(list1)
 	fmt.Println(list1[len(list1)-1])
 	fmt.Println(int(^uint(0) >> 1))
+
+	i := []int{1, 5, 9, 17, 18, 25, 60, 99}
+	fmt.Printf("slice[:2] -> %d\n", i[:2])
+	fmt.Printf("slice[5:] -> %d\n", i[5:])
+	i = append(i[:3], i[2:]...)
+	fmt.Printf("merge slice -> %v", i)
 }
