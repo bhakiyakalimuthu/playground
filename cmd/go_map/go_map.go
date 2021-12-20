@@ -40,4 +40,16 @@ func main() {
 		fmt.Println("I don't know that country")
 	}
 	fmt.Println(countryCodes["6"])
+
+	// reset map
+
+	a := map[string]string{"hello": "world"}
+	b := a
+	fmt.Printf("map copy : %v\n", b)
+	a = make(map[string]string)
+	//a = make(map[string]string)
+	fmt.Printf("map after reset : %v\n", a)
+	//a = make(map[string]string, 10)
+	a["hi"] = "universe"
+	fmt.Printf("map after reset : %v\n", a)
 }
