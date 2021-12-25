@@ -1,32 +1,22 @@
 package __longest_substring_withoug_repeating_char
 
 func lengthOfLongestSubstring(s string) int {
-
-	charMap := make(map[rune]struct{})
+	m := make(map[rune]int)
 	result := 0
-	temp := make([]rune, 0)
-
-	for _, val := range s {
-		if _, ok := charMap[val]; !ok {
-			charMap[val] = struct{}{}
-			temp = append(temp, val)
+	left := 0
+	for right, ch := range []rune(s) {
+		if index, ok := m[ch]; !ok {
+			m[ch] = right
 		} else {
-			for index, item := range temp {
-				delete(charMap, item)
-				temp = temp[index+1:]
-				if item == val {
-					break
-				}
+			if index >= left {
+				left = index + 1
 			}
-			temp = append(temp, val)
-			charMap[val] = struct{}{}
-			if len(temp) > result {
-				result = len(temp)
-			}
+			m[ch] = right
 		}
-	}
-	if len(temp) > result {
-		result = len(temp)
+		diff := (right - left) + 1
+		if diff > result {
+			result = diff
+		}
 	}
 	return result
 }

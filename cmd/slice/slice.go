@@ -42,5 +42,26 @@ func main() {
 	fmt.Printf("slice[:2] -> %d\n", i[:2])
 	fmt.Printf("slice[5:] -> %d\n", i[5:])
 	i = append(i[:3], i[2:]...)
-	fmt.Printf("merge slice -> %v", i)
+	fmt.Printf("merge slice -> %v\n", i)
+
+	in := make([]int, 0)
+	in = append(in, 2)
+	fmt.Printf(" before update in value : %v\n in address : %p\n", in, in)
+	x(in)
+	in = append(in, 3)
+	fmt.Printf(" afer update in value : %v\n in address : %p\n", in, in)
+}
+
+func x(s []int) {
+
+	fmt.Printf(" before update s value : %v\n s address : %p\n", s, s)
+	//s = append(s, 5)
+	//s1 := make([]int, 0)
+	//s1 = append(s1, 1)
+	//noOfItemCopied := copy(s, s1)
+	//fmt.Printf(" noOfItemCopied  : %d\n", noOfItemCopied)
+	//s2 := make([]int, 0)
+	//s2 = append(s2, 3)
+	//s = append(s, s2...)
+	fmt.Printf(" after update s value : %v\n s address : %p\n", s, s)
 }
