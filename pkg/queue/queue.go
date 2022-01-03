@@ -1,6 +1,8 @@
 package queue
 
-type Node struct{}
+type Node struct {
+	element interface{}
+}
 
 type Queue []*Node
 
