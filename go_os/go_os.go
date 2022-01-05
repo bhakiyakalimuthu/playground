@@ -9,9 +9,9 @@ import (
 
 func main() {
 	fmt.Println("os.Args ", os.Args)
-	//fmt.Println("os.Args 0", os.Args[0])
-	//fmt.Println("os.Args 1", os.Args[1])
-	//fmt.Println("os.Args 2", os.Args[2])
+	fmt.Println("os.Args 0", os.Args[0])
+	fmt.Println("os.Args 1", os.Args[1])
+	fmt.Println("os.Args 2", os.Args[2])
 
 	// Os.DevNull
 	fmt.Println("os.DevNull ", os.DevNull)
