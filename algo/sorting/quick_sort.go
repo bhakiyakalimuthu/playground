@@ -1,14 +1,14 @@
 package sorting
 
 func quickSort(nums []int) []int {
-	return sort(nums, 0, len(nums)-1)
+	return sortNum(nums, 0, len(nums)-1)
 }
 
-func sort(nums []int, start, end int) []int {
+func sortNum(nums []int, start, end int) []int {
 	if start < end {
 		pIndex := partition(nums, start, end)
-		sort(nums, start, pIndex-1)
-		sort(nums, pIndex+1, end)
+		sortNum(nums, start, pIndex-1)
+		sortNum(nums, pIndex+1, end)
 
 	}
 	return nums
