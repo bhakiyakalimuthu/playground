@@ -59,7 +59,7 @@ func display(prices []int) {
 			fmt.Println("unknown")
 		}
 	}
-	//fmt.Println(s0, s1)
+
 	fmt.Printf("%v\n", strings.Trim(fmt.Sprint(s0), "[]"))
 	fmt.Printf("%v\n", strings.Trim(fmt.Sprint(s1), "[]"))
 	fmt.Printf("%v\n", strings.Trim(fmt.Sprint(s2), "[]"))
