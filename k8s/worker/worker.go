@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -70,7 +71,28 @@ func (k *KubeClient) GetPods(ctx context.Context, namespace, resource string) (*
 	return pods, nil
 }
 
-func (k *KubeClient) ListPods(ctx context.Context, namespace string, quit chan uuid.UUID) (pods *v12.PodList) {
+func (k *KubeClient) ListPodsSingle(ctx context.Context, namespace string) (pods *v12.PodList) {
+	fmt.Printf("received namespace %s\n", namespace)
+	if namespace != "default" {
+		return nil
+	}
+	var err error
+	pods, err = k.client.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	for item, _ := range pods {
+
+	}
+	podName := strings.Split(pods.Items[0].Name, "-")
+	fmt.Printf("pod name %s\n", podName[len(podName)-1])
+	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	//b, _ := json.MarshalIndent(pods, "", " ")
+	//fmt.Printf("%+v\n", string(b))
+	return pods
+}
+
+func (k *KubeClient) ListPods(ctx context.Context, namespace string, quit chan struct{}) (pods *v12.PodList) {
 	select {
 	case <-time.After(time.Second * 2):
 		var err error
@@ -83,96 +105,66 @@ func (k *KubeClient) ListPods(ctx context.Context, namespace string, quit chan u
 		//fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 		//b, _ := json.MarshalIndent(pods, "", " ")
 		//fmt.Printf("%+v\n", string(b))
-	case val := <-quit:
-		fmt.Printf("received quit workerId %v", val)
-		if shouldWorkerQuit(ctx, val) {
-			fmt.Printf("quitting workerId %v", val)
-			return nil
-		}
-
+	case <-quit:
+		fmt.Printf("received quit signal, quitting")
+		return nil
 	case <-ctx.Done():
 		return nil
 	}
 	return
 }
 
-//func (k *KubeClient) ListPods(ctx context.Context, namespace string) (pods *v12.PodList) {
-//	fmt.Printf("received namespace %s\n", namespace)
-//	if namespace != "default" {
-//		return nil
-//	}
-//	var err error
-//	pods, err = k.client.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//	podName := strings.Split(pods.Items[0].Name, "-")
-//	fmt.Printf("pod name %s\n", podName[len(podName)-1])
-//	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
-//	//b, _ := json.MarshalIndent(pods, "", " ")
-//	//fmt.Printf("%+v\n", string(b))
-//	return pods
-//}
-
 func (k *KubeClient) Start(ctx context.Context) {
 	//wg := new(sync.WaitGroup)
 	//desiredWorkers := 4
-	nWorkers := 3
-	dWorkers := 5
-	//go func() {
-	//	time.After(time.Second * 5)
-	//	nWorkers++
-	//}()
-	workers := make(map[uuid.UUID]struct{})
-	quit := make(chan uuid.UUID)
-	go k.startWorker(ctx, workers, nWorkers, quit)
+	runningWorkers := 3
+	desiredWorkers := 5
 	go func() {
 		for {
-			<-time.After(time.Second)
-			fmt.Printf("workers length %d \n", len(workers))
+			<-time.After(time.Second * 2)
+			k.mu.Lock()
+			fmt.Printf("running workers %d desired workers %d \n", runningWorkers, desiredWorkers)
+			k.mu.Unlock()
 		}
 
 	}()
+	quit := make(chan struct{})
+	go k.startWorker(ctx, runningWorkers, quit)
 
 	go func() {
 		for {
-			<-time.After(time.Second * 10)
-			fmt.Printf("descrease dWorker length to 2 %d \n", len(workers))
-			dWorkers = dWorkers - 2
+			<-time.After(time.Second * 5)
+			fmt.Printf("descrease dWorker length to 2 %d \n", runningWorkers)
+			k.mu.Lock()
+			desiredWorkers = desiredWorkers - 2
+			k.mu.Unlock()
 			return
 			//<-time.After(time.Second * 5)
 			//fmt.Printf("descrease dWorker length to 2 %d \n", len(workers))
-			//dWorkers = dWorkers + 5
+			//desiredWorkers = desiredWorkers + 5
 		}
 
 	}()
 	go func() {
 
 		for {
-			<-time.After(time.Second * 5)
+			<-time.After(time.Second * 2)
 			fmt.Printf("starting background check \n")
-			count := len(workers) < dWorkers
-			if count {
-				scalingCount := dWorkers - len(workers)
-				fmt.Printf("scaling worker up, count  %d\n", scalingCount)
-				k.startWorker(ctx, workers, scalingCount, quit)
-				//nWorkers += scalingCount
-			} else if len(workers) > dWorkers {
-				diff := len(workers) - dWorkers
-				k.mu.Lock()
-				for id, _ := range workers {
-					if diff == 0 {
-						fmt.Printf("breaking inner loop, workers length %d \n", len(workers))
-						break
-					}
-
-					fmt.Printf("removing worker, id %v workers %d \n", id, len(workers))
-					delete(workers, id)
-					diff--
-					quit <- id
+			k.mu.Lock()
+			if runningWorkers < desiredWorkers {
+				scalingCount := desiredWorkers - runningWorkers
+				fmt.Printf("scaling worker up, scaling count  %d\n", scalingCount)
+				k.startWorker(ctx, scalingCount, quit)
+				runningWorkers += scalingCount
+			} else if runningWorkers > desiredWorkers {
+				diff := runningWorkers - desiredWorkers
+				for i := 0; i < diff; i++ {
+					fmt.Printf("removing worker id : %d", i)
+					runningWorkers--
+					quit <- struct{}{}
 				}
-				k.mu.Unlock()
 			}
+			k.mu.Unlock()
 		}
 
 	}()
@@ -184,15 +176,10 @@ func (k *KubeClient) Start(ctx context.Context) {
 	}
 }
 
-func (k *KubeClient) startWorker(ctx context.Context, workers map[uuid.UUID]struct{}, nWorkers int, quit chan uuid.UUID) {
+func (k *KubeClient) startWorker(ctx context.Context, nWorkers int, quit chan struct{}) {
 	for i := 0; i < nWorkers; i++ {
 		go func() {
-			workerId := uuid.New()
-			k.mu.Lock()
-			workers[workerId] = struct{}{}
-			k.mu.Unlock()
-			ctxWithVal := context.WithValue(ctx, workerId, struct{}{})
-			for pods := k.ListPods(ctxWithVal, "default", quit); pods != nil; pods = k.ListPods(ctxWithVal, "default", quit) {
+			for pods := k.ListPods(ctx, "default", quit); pods != nil; pods = k.ListPods(ctx, "default", quit) {
 				//for nWorkers != desiredWorkers {
 				//	fmt.Printf("continue")
 				//	 continue

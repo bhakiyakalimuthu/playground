@@ -15,7 +15,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	//namespace := "goerli"
 	//resource := "bundle-simulation-backend"
-	//namespace := "default"
+	namespace := "default"
+	//resource := "k8s-test-6fd655c64d-vjc47"
 	//resource := "proxyd"
 	//c.GetDeployments(context.Background(),namespace)
 	//c.GetDeployment(context.Background(), namespace, resource)
@@ -32,7 +33,8 @@ func main() {
 		fmt.Println("shutting down")
 		cancel()
 	}()
-	//c.ListPods(ctx, namespace, nil)
-	c.Start(ctx)
+	c.ListPodsSingle(ctx, namespace)
+	//c.GetPods(ctx, namespace, resource)
+	//c.Start(ctx)
 	//c.GetDeployment(ctx, namespace, resource)
 }

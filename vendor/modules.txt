@@ -17,6 +17,9 @@ github.com/davecgh/go-spew/spew
 ## explicit
 github.com/emicklei/go-restful
 github.com/emicklei/go-restful/log
+# github.com/ethereum/go-ethereum v1.10.23
+## explicit; go 1.17
+github.com/ethereum/go-ethereum/log
 # github.com/evanphx/json-patch v4.12.0+incompatible
 ## explicit
 github.com/evanphx/json-patch
@@ -38,6 +41,9 @@ github.com/go-openapi/jsonreference
 # github.com/go-openapi/swag v0.19.14
 ## explicit; go 1.11
 github.com/go-openapi/swag
+# github.com/go-stack/stack v1.8.0
+## explicit
+github.com/go-stack/stack
 # github.com/gogo/protobuf v1.3.2
 ## explicit; go 1.15
 github.com/gogo/protobuf/proto
@@ -66,9 +72,10 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
-# github.com/google/gofuzz v1.1.0
+# github.com/google/gofuzz v1.1.1-0.20200604201612-c04b05f3adfa
 ## explicit; go 1.12
 github.com/google/gofuzz
+github.com/google/gofuzz/bytesource
 # github.com/google/uuid v1.3.0
 ## explicit
 github.com/google/uuid
@@ -129,10 +136,10 @@ github.com/prometheus/procfs/internal/util
 # github.com/spf13/pflag v1.0.5
 ## explicit; go 1.12
 github.com/spf13/pflag
-# github.com/stretchr/testify v1.7.0
+# github.com/stretchr/testify v1.7.2
 ## explicit; go 1.13
 github.com/stretchr/testify/assert
-# golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd
+# golang.org/x/net v0.0.0-20220607020251-c690dde0001d
 ## explicit; go 1.17
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
@@ -213,7 +220,7 @@ gopkg.in/inf.v0
 # gopkg.in/yaml.v2 v2.4.0
 ## explicit; go 1.15
 gopkg.in/yaml.v2
-# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+# gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
 # k8s.io/api v0.24.3
