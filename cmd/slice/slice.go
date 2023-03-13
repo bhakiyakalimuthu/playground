@@ -7,7 +7,8 @@ import (
 func main() {
 	var s1 []string
 	s2 := []string{"y"}
-	s3 := make([]string, 0, 2)
+	s3 := make([]string, 1, 2)
+	s3[0] = "x"
 	s4 := make([]string, 0)
 	s5 := make([]string, 5)
 
@@ -16,7 +17,7 @@ func main() {
 	fmt.Printf("s3 equal nil : %t len: %d cap : %d\n", s3 == nil, len(s3), cap(s3))
 	fmt.Printf("s4 equal nil : %t len: %d cap : %d\n", s4 == nil, len(s4), cap(s4))
 	fmt.Printf("s5 equal nil : %t len: %d cap : %d\n", s5 == nil, len(s5), cap(s5))
-
+	fmt.Printf(s3[0])
 	s := "playground"
 	for _, v := range s {
 		fmt.Println(string(v))
