@@ -5,6 +5,17 @@ import (
 )
 
 func main() {
+	new()
+}
+
+func new() {
+
+	s := []string{"h", "e", "l", "l", "0"}
+	fmt.Println(s[0:4])
+	fmt.Println(len(s), cap(s))
+
+}
+func old() {
 	var s1 []string
 	s2 := []string{"y"}
 	s3 := make([]string, 1, 2)
@@ -31,7 +42,7 @@ func main() {
 	fmt.Printf("string first item : %s last item %s\n", string(s[0]), string(s[len(s)-1]))
 	fmt.Printf("rune first item : %d last item %d\n", s[0], s[len(s)-1])
 	s = s[:]
-	fmt.Println(s)
+	fmt.Println("s value", s)
 
 	list1 := []int{1, 2, 3}
 	list1 = append(list1, 0)
