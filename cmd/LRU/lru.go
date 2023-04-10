@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/list"
+	"crypto/ecdsa"
 )
 
 func main() {
@@ -77,4 +78,8 @@ func (l *LRU) Get(key string) string {
 	}
 	return ""
 
+}
+
+func crypto() {
+	ecdsa.GenerateKey()
 }
