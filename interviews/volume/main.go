@@ -23,7 +23,7 @@ func main() {
 			select {
 			case <-ticker.C:
 				now := time.Now()
-				if now.Minute == 17 {
+				if now.Minute() == int(17) {
 					fmt.Println("job 1 running, current minute", now.Minute())
 				}
 			case <-ctx.Done():
@@ -38,7 +38,7 @@ func main() {
 			select {
 			case <-ticker.C:
 				now := time.Now()
-				if now%4 == 0 {
+				if now.Minute()%4 == 0 {
 					fmt.Println("job 2 running")
 				}
 			case <-ctx.Done():
@@ -53,7 +53,7 @@ func main() {
 			select {
 			case <-ticker.C:
 				now := time.Now()
-				if now%6 == 0 {
+				if now.Minute()%6 == 0 {
 					<-time.After(time.Minute * 1)
 					fmt.Println("job 3 running")
 				}
@@ -67,4 +67,34 @@ func main() {
 	signal.Notify(done, syscall.SIGTERM, syscall.SIGINT)
 	<-done
 	cancel()
+}
+
+func main_alternate() {
+	var job1_last_executed, job2_last_executed, job3_last_executed time.Time
+
+	for {
+		now := time.Now()
+
+		if now.Minute() == 17 && job1_last_executed.Before(now.Truncate(time.Hour)) {
+			fmt.Println("Job 1 executed at", now)
+			job1_last_executed = now
+			continue
+		}
+
+		if now.Minute()%4 == 0 && job2_last_executed.Before(now.Truncate(time.Minute)) {
+			fmt.Println("Job 2 executed at", now)
+			job2_last_executed = now
+			continue
+		}
+
+		minutes_since_last_exec := int((now.Sub(job3_last_executed)) / time.Minute)
+		if minutes_since_last_exec >= 6 {
+			exec_time := now.Truncate(time.Minute).Add(time.Minute)
+			fmt.Println("Job 3 executed at", exec_time)
+			job3_last_executed = exec_time
+			continue
+		}
+
+		time.Sleep(1 * time.Second)
+	}
 }
