@@ -35,7 +35,7 @@ func main() {
 	var val int
 	val = 10
 	// lock free
-	lf := &counterWF{val.(atomic.Value)}
+	lf := &counterWF{}
 	lf.Inc()
 	lf.Inc()
 	lf.Inc()
